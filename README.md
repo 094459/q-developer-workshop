@@ -200,7 +200,7 @@ The "Prompt" or "Chat Interface" is how tools like Amazon Q Developer know what 
 
 Ok, you are now up to speed with the Amazon Q Developer plugin, and it is time to see what you can achieve with it.
 
-## Building our new application (30min)
+## Building our new application
 
 In this lab we are going to build an application in Python that will allow us to get feedback by creating polls, and then letting people vote. We have chosen Python as it makes it easy to follow along and understand how these next generation developer tools work. The application will initially have some basic functionality, an MLP - Minimum Lovable Product.We will be using Amazon Q Developer to help us add code and improve the basic functionality.
 
@@ -371,7 +371,7 @@ We can now try this feature out.
 
 From the Amazon Q Developer Chat interface, type @ and you should see workspace appear. Tab to complete that, and then add the following to your prompt:
 
-> @workspace DBA Create a data model for a simple Voting application. Users will log in using an email addresses. Users will be able to create new Polls, or update/delete existing Polls. Users can create multiple Polls. Polls can have between 2 and 5 options.Once Polls are created, the End Users will be able to vote on a Poll. We will capture the source IP address of End Users when voting.
+> @workspace DBA Create a data model for a simple Voting application. Users will log in using an email addresses. Users will be able to create new Polls, or update/delete existing Polls. Users can create multiple Polls. Once Polls are created, the End Users will be able to vote on a Poll. We will capture the source IP address of End Users when voting.
 
 Hit return and review the output. You should get very different output this time. This is what mine looks like.
 
@@ -403,11 +403,6 @@ ip_address INET NOT NULL,
 voted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE polls ADD CONSTRAINT check_option_count
-CHECK (
-(SELECT COUNT(*) FROM poll_options WHERE poll_id = polls.poll_id)
-BETWEEN 2 AND 5
-);
 ```
 
 As you can see, this time we have got SQL code rather than Python code. What just happened? Well, the @workspace used the local DBA.md file as input (context) to help shape the output. You can experiment with this if you want. For example, I added the following line -> - My preferred database is PostgreSQL so provide any SQL that works with PostgreSQL.
@@ -746,7 +741,7 @@ In this instance I am going to close the array. When I hit return, Amazon Q Deve
 
 Now that we have our function, we can use this when adding a new About page. We will try a new prompt from the editor, this time moving the editor to the #Routes section, and after the initial root route.
 
-> # Add a route for /about that will display a new html page called about.html that includes a quote from the get_yoda_wisdom function
+> Add a route for /about that will display a new html page called about.html that includes a quote from the get_yoda_wisdom function
 
 ![initial prompt for the about page](images/q-vscode-about-prompt.png)
 
@@ -1047,215 +1042,3 @@ Leave this up and running in a command window as we will need to connect to this
 >
 
 
-
----
-
-import unittest
-from app import app, db, User, Poll, PollOption, Vote
-from flask_testing import TestCase
-
-class TestBase(TestCase):
-    def create_app(self):
-        app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-        return app
-
-    def setUp(self):
-        db.create_all()
-
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
-
-class TestUserRegistration(TestBase):
-    def test_user_registration_success(self):
-        response = self.client.post('/register', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        }, follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'User registered successfully', response.data)
-        user = User.query.filter_by(email='test@example.com').first()
-        self.assertIsNotNone(user)
-
-    def test_user_registration_duplicate_email(self):
-        # Register a user
-        self.client.post('/register', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        # Try to register with the same email
-        response = self.client.post('/register', data={
-            'email': 'test@example.com',
-            'password': 'anotherpassword'
-        }, follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'Email already registered', response.data)
-
-    def test_user_registration_missing_fields(self):
-        response = self.client.post('/register', data={}, follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'Email and password are required', response.data)
-
-class TestPollCreation(TestBase):
-    def test_poll_creation_success(self):
-        # Register and login a user
-        self.client.post('/register', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        self.client.post('/login', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-
-        response = self.client.post('/create_poll', data={
-            'title': 'Test Poll',
-            'options': ['Option 1', 'Option 2', 'Option 3']
-        }, follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'Poll created successfully', response.data)
-        poll = Poll.query.filter_by(title='Test Poll').first()
-        self.assertIsNotNone(poll)
-        self.assertEqual(len(poll.options), 3)
-
-    def test_poll_creation_not_logged_in(self):
-        response = self.client.post('/create_poll', data={
-            'title': 'Test Poll',
-            'options': ['Option 1', 'Option 2']
-        }, follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'You must be logged in to create a poll', response.data)
-
-    def test_poll_creation_missing_fields(self):
-        # Register and login a user
-        self.client.post('/register', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        self.client.post('/login', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-
-        response = self.client.post('/create_poll', data={
-            'title': 'Test Poll',
-            'options': ['Option 1']
-        }, follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'Title and at least two options are required', response.data)
-
-class TestUserAuthentication(TestBase):
-    def test_login_success(self):
-        # Register a user
-        self.client.post('/register', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        # Login
-        response = self.client.post('/login', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        }, follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'Logged in successfully', response.data)
-
-    def test_login_failure(self):
-        response = self.client.post('/login', data={
-            'email': 'nonexistent@example.com',
-            'password': 'wrongpassword'
-        }, follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'Invalid email or password', response.data)
-
-    def test_logout(self):
-        # Register and login a user
-        self.client.post('/register', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        self.client.post('/login', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        # Logout
-        response = self.client.get('/logout', follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'Logged out successfully', response.data)
-
-class TestVoting(TestBase):
-    def test_voting_success(self):
-        # Register a user, create a poll, and vote
-        self.client.post('/register', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        self.client.post('/login', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        self.client.post('/create_poll', data={
-            'title': 'Test Poll',
-            'options': ['Option 1', 'Option 2']
-        })
-        poll = Poll.query.filter_by(title='Test Poll').first()
-        option = poll.options[0]
-
-        response = self.client.post(f'/poll/{poll.poll_id}', data={
-            'option_id': option.option_id
-        }, follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'Vote recorded successfully', response.data)
-        vote = Vote.query.filter_by(poll_id=poll.poll_id, option_id=option.option_id).first()
-        self.assertIsNotNone(vote)
-
-    def test_voting_no_option_selected(self):
-        # Register a user, create a poll, and attempt to vote without selecting an option
-        self.client.post('/register', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        self.client.post('/login', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        self.client.post('/create_poll', data={
-            'title': 'Test Poll',
-            'options': ['Option 1', 'Option 2']
-        })
-        poll = Poll.query.filter_by(title='Test Poll').first()
-
-        response = self.client.post(f'/poll/{poll.poll_id}', data={}, follow_redirects=True)
-        self.assert200(response)
-        self.assertIn(b'Please select an option', response.data)
-
-class TestViewResults(TestBase):
-    def test_view_results(self):
-        # Register a user, create a poll, vote, and view results
-        self.client.post('/register', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        self.client.post('/login', data={
-            'email': 'test@example.com',
-            'password': 'testpassword'
-        })
-        self.client.post('/create_poll', data={
-            'title': 'Test Poll',
-            'options': ['Option 1', 'Option 2']
-        })
-        poll = Poll.query.filter_by(title='Test Poll').first()
-        option = poll.options[0]
-
-        self.client.post(f'/poll/{poll.poll_id}', data={
-            'option_id': option.option_id
-        })
-
-        response = self.client.get(f'/poll/{poll.poll_id}/results')
-        self.assert200(response)
-        self.assertIn(b'Test Poll', response.data)
-        self.assertIn(b'Option 1', response.data)
-        self.assertIn(b'Option 2', response.data)
-
-if __name__ == '__main__':
-    unittest.main()
