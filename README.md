@@ -722,7 +722,7 @@ git checkout lab-05
 
 Open up the app.py file. We are first going to create a new function that will return a random quote which we will include in our About page. Just above the #Routes section add the following and hit return. Watch carefully what happens in the editor.
 
-> # Yoda Wisdom - create a function that will return a single, random quote of wisdom from Master Yoda
+> Yoda Wisdom - create a function that will return a single, random quote of wisdom from Master Yoda
 
 ![Initial prompt](images/q-vscode-yoda-function-prompt.png)
 
