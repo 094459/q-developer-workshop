@@ -8,7 +8,7 @@ In this hands on lab, we are going to run through how to use the next generation
 
 We will create a new application from scratch, and then build upon this and perform many of the tasks you would typically do as a developer. 
 
-One thing to bear in mind before we start. Unlike other workshops, because of the non deterministic nature of these tools, there is no guarantee that the output will be the same as what your peers will see. What that means is that if you are working in groups, you can all expect different outputs. We have provided a [sample repo](https://github.com/094459/ada-python-demo-app) that you can use as a baseline, but we encourage you to explore and work with your own experiments - this is the most effective way of learning how these tools work.
+One thing to bear in mind before we start. Unlike other workshops, because of the non deterministic nature of these tools, there is no guarantee that the output will be the same as what your peers will see. What that means is that if you are working in groups, you can all expect different outputs. We have provided a [sample repo](https://github.com/094459/q-workshop-app) that you can use as a baseline, but we encourage you to explore and work with your own experiments - this is the most effective way of learning how these tools work.
  
 The workshop is split into a number of different labs, with some lectures as well. This is what we will cover how we can use coding assistants like Amazon Q Developer to help us build applications quickly. We will look at some of the important features through labs, and help build your confidence in how you can use these yourself.
 
@@ -35,7 +35,7 @@ Everyone running through this lab will have a different experience, but I hope t
 
 If you are working through this in a group setting, then the person running the lab will lead from the front and you can take your guidance from them.
 
-# Setting up, and getting starting with Amazon Q Developer (20 min)
+## Setting up, and getting starting with Amazon Q Developer (20 min)
 
 We are now ready for the first hands on part of this lab, setting up the generative AI developer tooling we are going to be using. We are going to be using Amazon Q Developer, a next generation developer tool that provides you with in-line code suggestions and a chat interface to help your developer flow. This is installed into your IDE (VSCode and IntelliJ are supported) via a plugin. Once the plugin is installed, we need to login using something that is called a Builder ID account. This allows you to access the Free Tier of Amazon Q Developer, without the need for an AWS account. So we first need to set that up, and then install the Amazon Q Developer plugin.
 
