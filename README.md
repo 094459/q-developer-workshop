@@ -876,6 +876,17 @@ test_app.py::test_voting_no_option_selected
 
 ```
 
+*Using Amazon Q Developer to tweak the tests*
+
+I have found that it is often useful to use the initial code that Amazon Q produces as a starting point, and then to make changes as needed. For example, when using /dev to create the unit tests, I found I needed to modify how it interacted with the data objects. I use Amazon Q Developer @workspace to help modify to my test needs.
+
+In my case, the test was using the database connection from the local database, whereas I wanted it to create an ephemeral copy of the data when running tests. I used the following prompt:
+
+> @workspace when the test is run in test_app.py, it uses the existing postgres database connection defined in app.py, and so deletes data when the test finishes. how can i change this behaviour
+
+I was then provided information and updated code that helped me change the behaviour.
+
+
 If you get stuck, then you can see the working code by checking out the [following branch](https://github.com/094459/q-workshop-app/tree/lab-07)
 
 ```
@@ -922,8 +933,44 @@ Take a look at your output. What do you think? If you are not happy, remember to
 
 **Lab 02-4 Open Sourcing our project**
 
+Now that my project is ready for the world to see, I have decided that I am going to open source this project as I want to build a community of people who might be interested in helping me improve the code and make it better.
+
+**Task 16**
+
+I can ask Amazon Q Developer to provide some guidance on what I need to do.
+
+> **Warning!!** This guidance should be used in conjunction with conversations you have with any folk that you work with on Intelectual Property. This guidance here is only to show you how Amazon Q Developer can help you ONCE you have had those conversations and decided that open source is the way you want to go.
+
+There are two ways I could approach this, in a similar way to the documentation. Using the native Amazon Q Developer Chat interface, or by using the Amazon Q Develoepr Agent for software development (/dev). I have decided that I am going to use @workspace, and this is the sample prompt I use:
+
+> I want to open source this project using an Apache 2.0 licence. My company name is Beachgeek Enterprises so please update any copyright messages accordingly. How do I need to update this projects files?
+
+I am happy with the output it provides (see below), but I think it could be improved, so I follow this up with:
+
+> I want to include SPDX headers in the files, what do these look like
+
+![example output of helping me open source my project](images/q-vscode-open.png)
+
+You might need to do this if you have any specific requirements you need to meet that come out with conversations with your open source program office (OSPO) - if you have one.
+
+Explore this and update the code.
+
+If you get stuck, or want to see the completed sample I came up with, check out the [branch here]() or you can switch branch using the following command:
+
+```
+git checkout lab-09
+```
+
+---
+
+**Lab 02-5 Finishing touches**
+
+Before we finish, there are a couple of final tasks that need to be done. Like many projectds we work on, we occasionally have snagging tasks that are spotted late and need to be completed before we are ready to launch. In this project there are a couple of things: First, the main page does not have a link to the about page, so we need to fix that. Second, it would be good if we could add some basic style sheets to make it look more appealing. Lets do that now.
 
 
+
+
+**Task 17**
 
 
 
