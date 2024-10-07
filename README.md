@@ -436,8 +436,6 @@ CREATE TABLE
 CREATE TABLE
 CREATE TABLE
 CREATE TABLE
-CREATE FUNCTION
-CREATE TRIGGER
 ```
 
 Congratulations, you have created your data model, and we can now start to build the application code.
