@@ -967,10 +967,41 @@ git checkout lab-09
 
 Before we finish, there are a couple of final tasks that need to be done. Like many projectds we work on, we occasionally have snagging tasks that are spotted late and need to be completed before we are ready to launch. In this project there are a couple of things: First, the main page does not have a link to the about page, so we need to fix that. Second, it would be good if we could add some basic style sheets to make it look more appealing. Lets do that now.
 
-
-
-
 **Task 17**
+
+The first thing I am going to do is ask Amazon Q Developer to help me update the navigation links so they provide a link to the about page. This is the prompt I use. As you can see I am using @workspace again so that Amazon Q looks at the files in the workspace:
+
+> @workspace can you update the project so that there is a navigation link to the about page
+
+It provides exactly the right info. In our example we might have been able to easily update this, but when you are working in more complex projects with many hundreds of files, having this information provided will help you make those necessary changes much more quickly.
+
+**Task 18**
+
+Now that we have the navigation sorted, lets try and put some front end magic on this. I am going to be using @workspace again, and this is the prompt I use. Try this for yourself and then experiment a little and see how different prompts might give you different code and suggestions.
+
+> @workspace I want to add some basic css to this project to make the Polls look more exciting. I want to add more space between the Poll options, make the button look more interesting
+
+You will need to follow up with additional prompts. For example
+
+> @workspace how do I update the view_results.html to use the css
+> @workspace update the about.html touse the css
+
+We could use /dev to automate and update this for us, but in this example I find it more useful to have more fine grain control on how we are changing and updating our files.
+
+
+If you want to see the code that I came up with, check out [the branch here](https://github.com/094459/q-workshop-app/tree/lab-10) or switch to the branch locally using the following command
+
+```
+git checkout lab-10
+```
+
+
+**Task 19**
+
+Imagine that someone had given you this project to make some changes. You are new to the code base. The documentation in the code as well as the README already provide you with some help, but what if you want more specific help.
+
+Amazon Q Developer can help you with its integrated feature to explain how code works. From the editor, select a portion of the code (or event all of it) and right click. From the Amazon Q menu option, select "Explain" and then review the output from Amazon Q Developer in the Chat interface window. 
+
 
 
 
